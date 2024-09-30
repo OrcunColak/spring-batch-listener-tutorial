@@ -3,7 +3,8 @@ package com.colak.springtutorial.config;
 import com.colak.springtutorial.config.chunklistener.CustomChunkListener;
 import com.colak.springtutorial.config.itemread.CustomItemReadListener;
 import com.colak.springtutorial.config.joblistener.AnnotatedJobExecutionListener;
-import com.colak.springtutorial.config.joblistener.JobCompletionNotificationListener;
+import com.colak.springtutorial.config.joblistener.CustomJobExecutionListener;
+import com.colak.springtutorial.config.steplistener.CustomStepExecutionListener;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.job.builder.JobBuilder;
@@ -27,9 +28,9 @@ public class BatchConfig {
     public Job job(JobRepository jobRepository, Step step) {
         return new JobBuilder("job", jobRepository)
                 .incrementer(new RunIdIncrementer())
-                .listener(new JobCompletionNotificationListener())
+                .listener(new CustomJobExecutionListener())
                 .listener(JobListenerFactoryBean.getListener(new AnnotatedJobExecutionListener()))
-                .listener(new StepExecutionNotificationListener())
+                .listener(new CustomStepExecutionListener())
 
 
                 .start(step)
@@ -44,7 +45,7 @@ public class BatchConfig {
                 .processor(itemProcessor())
                 .writer(itemWriter())
                 .listener(new CustomChunkListener())
-                .listener(new StepExecutionNotificationListener())
+                .listener(new CustomStepExecutionListener())
                 .listener(new CustomItemReadListener<>())
                 .build();
     }
