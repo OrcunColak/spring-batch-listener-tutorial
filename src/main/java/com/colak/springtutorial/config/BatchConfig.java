@@ -7,6 +7,7 @@ import com.colak.springtutorial.config.joblistener.CustomJobExecutionListener;
 import com.colak.springtutorial.config.steplistener.CustomStepExecutionListener;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
+import org.springframework.batch.core.job.DefaultJobParametersValidator;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.listener.JobListenerFactoryBean;
@@ -26,7 +27,11 @@ public class BatchConfig {
 
     @Bean
     public Job job(JobRepository jobRepository, Step step) {
+        // Add an example validator which by default does nothing
+        DefaultJobParametersValidator validator = new DefaultJobParametersValidator();
+
         return new JobBuilder("job", jobRepository)
+                .validator(validator)
                 .incrementer(new RunIdIncrementer())
                 .listener(new CustomJobExecutionListener())
                 .listener(JobListenerFactoryBean.getListener(new AnnotatedJobExecutionListener()))
